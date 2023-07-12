@@ -56,3 +56,9 @@ sum = fan_interior_local+fan_interior_central+fan_interior_exhaust
 print(sum)
 
 # flatten building results data
+df = pd.json_normalize(data['proposed_results']['building_results'])
+
+"""get total electricty values"""
+inW = get_gj_value(df, "Total electricity.total")
+inKWH = inW * 0.001
+print(inKWH)
