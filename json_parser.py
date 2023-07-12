@@ -19,6 +19,12 @@ def get_energy_sources(df: pd.DataFrame, energy_use: str) -> typing.List[str]:
 
 def get_energy_usage(df: pd.DataFrame, energy_use_name: str) -> typing.List[str]:
     energy_usage = df["proposed_results"]["energy_uses"][energy_use_name]["sources"]["elec"]["usage"]
+    energy_usage = convert_kwh_to_gj(energy_usage)
+    return energy_usage
+
+
+def get_building_sizes(df: pd.DataFrame) -> typing.List[str]:
+    energy_usage = df["proposed_results"]["aps_stats"]["sizes"]
     return energy_usage
 
 
@@ -28,23 +34,20 @@ with open(json_file_path) as f:
 
 # flatten aps_stats data
 df_aps_stat_flat = pd.json_normalize(data['proposed_results']['aps_stats'])
+df = pd.read_json(json_file_path)
+
 
 """areas and volumes and rooms"""
-area = df_aps_stat_flat['sizes.area'].iloc[0]
-volume = df_aps_stat_flat['sizes.volume'].iloc[0]
-rooms = df_aps_stat_flat['sizes.rooms'].iloc[0]
-sizes = " Area: {}\n Volume: {}\n Rooms: {}\n".format(area, volume, rooms)
-print(sizes)
+print(get_building_sizes(df))
 
-# flatten aps_stats data
-# df_energy_uses_flat = pd.json_normalize(
-#     data['proposed_results']['energy_uses'])
+# area = df_aps_stat_flat['sizes.area'].iloc[0]
+# volume = df_aps_stat_flat['sizes.volume'].iloc[0]
+# rooms = df_aps_stat_flat['sizes.rooms'].iloc[0]
+# sizes = " Area: {}\n Volume: {}\n Rooms: {}\n".format(area, volume, rooms)
+# print(sizes)
+
 
 """get interior lighitng"""
-# print(get_gj_value(df_energy_uses_flat, "prm_interior_lighting.sources.elec.usage"))
-
-# read data from from json (not flattened)
-df = pd.read_json(json_file_path)
 print(get_energy_usage(df, "prm_interior_lighting"))
 
 
