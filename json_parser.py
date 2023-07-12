@@ -17,15 +17,38 @@ def get_energy_sources(df: pd.DataFrame, energy_use: str) -> typing.List[str]:
     return list(energy_sources.keys())
 
 
-def get_energy_usage(df: pd.DataFrame, energy_use_name: str) -> typing.List[str]:
-    energy_usage = df["proposed_results"]["energy_uses"][energy_use_name]["sources"]["elec"]["usage"]
+def sources_filtering_function(pair):
+    wanted_keys = ['name', 'usage']
+    key, value = pair
+    if key in wanted_keys:
+        return True  # keep pair in the filtered dictionary
+    else:
+        return False  # filter pair out of the dictionary
+
+
+def get_energy_usage(df: pd.DataFrame, energy_use_name: str, sourceFlag: int) -> float:
+    """get the energy usage of the json file in gj\n
+    The sourceFlag mapping is as follows:\n
+    1 = Electricity
+    2 = Natural Gas
+    """
+    # check flag
+    energy_src = ""
+    if sourceFlag == 1:
+        energy_src = "elec"
+    elif sourceFlag == 2:
+        energy_src = "nat_gas"
+
+    # get energy usage and convert from kwh to gj
+    energy_usage = df["proposed_results"]["energy_uses"][energy_use_name]["sources"][energy_src]["usage"]
     energy_usage = convert_kwh_to_gj(energy_usage)
-    return energy_usage
+
+    return {"name": energy_use_name, "usage": energy_usage}
 
 
 def get_building_sizes(df: pd.DataFrame) -> typing.List[str]:
-    energy_usage = df["proposed_results"]["aps_stats"]["sizes"]
-    return energy_usage
+    building_sizes = df["proposed_results"]["aps_stats"]["sizes"]
+    return building_sizes
 
 
 # Read JSON file
@@ -33,54 +56,47 @@ with open(json_file_path) as f:
     data = json.load(f)
 
 # flatten aps_stats data
-df_aps_stat_flat = pd.json_normalize(data['proposed_results']['aps_stats'])
+# df_aps_stat_flat = pd.json_normalize(data['proposed_results']['aps_stats'])
 df = pd.read_json(json_file_path)
 
 
 """areas and volumes and rooms"""
 print(get_building_sizes(df))
 
-# area = df_aps_stat_flat['sizes.area'].iloc[0]
-# volume = df_aps_stat_flat['sizes.volume'].iloc[0]
-# rooms = df_aps_stat_flat['sizes.rooms'].iloc[0]
-# sizes = " Area: {}\n Volume: {}\n Rooms: {}\n".format(area, volume, rooms)
-# print(sizes)
-
-
 """get interior lighitng"""
-print(get_energy_usage(df, "prm_interior_lighting"))
+print(get_energy_usage(df, "prm_interior_lighting", 1))
 
 
-# """get domestic hot water values"""
-# print(get_gj_value(df_energy_uses_flat,
-#       "prm_services_water_heating.sources.elec.usage"))
+"""get domestic hot water values"""
+print(get_energy_usage(df, "prm_services_water_heating", 1))
 
-# """get miscellaneous equipment values"""
-# print(get_gj_value(df_energy_uses_flat,
-#       "prm_receptacle_equipment.sources.elec.usage"))
+"""get miscellaneous equipment values"""
+print(get_energy_usage(df, "prm_receptacle_equipment", 1))
 
-# """get pumping values"""
-# print(get_gj_value(df_energy_uses_flat, "prm_pumps.sources.elec.usage"))
+"""get pumping values"""
+print(get_energy_usage(df, "prm_pumps", 1))
 
-# """get space cooling values"""
-# print(get_gj_value(df_energy_uses_flat, "prm_space_cooling.sources.elec.usage"))
+"""get space cooling values"""
+print(get_energy_usage(df, "prm_space_cooling", 1))
 
-# """get space heating values"""
-# print(get_gj_value(df_energy_uses_flat, "prm_space_heating.sources.elec.usage"))
+"""get space heating values"""
+print(get_energy_usage(df, "prm_space_heating", 1))
 
-# """get fan values"""
-# fan_interior_local = get_gj_value(
-#     df_energy_uses_flat, "prm_fans_interior_local.sources.elec.usage")
-# fan_interior_central = get_gj_value(
-#     df_energy_uses_flat, "prm_fans_interior_central.sources.elec.usage")
-# fan_interior_exhaust = get_gj_value(
-#     df_energy_uses_flat, "prm_fans_exhaust.sources.elec.usage")
-# sum = fan_interior_local+fan_interior_central+fan_interior_exhaust
-# print(sum)
 
-# # flatten building results data
-# df_building_results_flat = pd.json_normalize(
-#     data['proposed_results']['building_results'])
+"""get fan values"""
+fan_interior_local = get_energy_usage(df, "prm_fans_interior_local", 1)
+fan_interior_central = get_energy_usage(df, "prm_fans_interior_central", 1)
+fan_exhaust = get_energy_usage(df, "prm_fans_exhaust", 1)
+
+total_fan_usage = fan_interior_local["usage"] + \
+    fan_interior_central["usage"]+fan_exhaust["usage"]
+
+fan_combined = {"name": "fan_total", "usage": total_fan_usage}
+print(fan_combined)
+
+# flatten building results data
+df_building_results_flat = pd.json_normalize(
+    data['proposed_results']['building_results'])
 
 # """get total electricty values"""
 # inW = get_gj_value(df_building_results_flat, "Total electricity.total")
