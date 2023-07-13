@@ -1,3 +1,4 @@
 /env
 *__pycache__
 EnergyDataParser.code-workspace
+.vscode/settings.json
