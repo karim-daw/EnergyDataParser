@@ -1,8 +1,6 @@
 import pandas as pd
 import json
-from convert_units import convert_kwh_to_gj, convert_wh_to_kwh
-from typing import List, Dict
-from utilities import sum_values_by_key, display_usage
+from utilities import display_usage
 from energy_extractor import *
 
 json_file_path = "data/EC.d Export Pfizer_LEED_R1 [both].json"
