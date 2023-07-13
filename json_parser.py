@@ -2,7 +2,7 @@ import pandas as pd
 import json
 from convert_units import convert_kwh_to_gj, convert_wh_to_kwh
 from typing import List, Dict
-from utilities import sum_values_by_key
+from utilities import sum_values_by_key, display_usage
 
 json_file_path = "data/EC.d Export Pfizer_LEED_R1 [both].json"
 
@@ -23,7 +23,7 @@ def get_energy_uses(df: pd.DataFrame) -> List[str]:
     return list(energy_sources.keys())
 
 
-def get_elec_energy_usage(df: pd.DataFrame, energy_use_name: str) -> Dict[str, float]:
+def get_elec_energy_usage(df: pd.DataFrame, energy_use_name: str) -> float:
     """get the energy usage of the json file in gj\n
     The sourceFlag mapping is as follows:\n
     1 = Electricity
@@ -34,24 +34,24 @@ def get_elec_energy_usage(df: pd.DataFrame, energy_use_name: str) -> Dict[str, f
         energy_usage = df["proposed_results"]["energy_uses"][energy_use_name]["sources"]["elec"]["usage"]
         # get energy usage and convert from kwh to gj
         energy_usage = convert_kwh_to_gj(energy_usage)
-        return {"source": "elec", "name": energy_use_name, "usage": energy_usage}
+        return energy_usage
     else:
-        return {"source": "elec", "name": energy_use_name, "usage": 0}
+        return 0
 
 
-def get_natGas_energy_usage(df: pd.DataFrame, energy_use_name: str) -> Dict[str, float]:
+def get_natGas_energy_usage(df: pd.DataFrame, energy_use_name: str) -> float:
     """check energy sources"""
     # if no natural gas return 0
     energy_sources = get_energy_sources(df, energy_use_name)
     if "nat_gas" not in energy_sources:
-        return {"source": "nat_gas", "name": energy_use_name, "usage": 0}
+        return 0
     else:
         energy_usage_kwh = df["proposed_results"]["energy_uses"][energy_use_name]["sources"]["nat_gas"]["usage"]
         energy_usage_gj = convert_kwh_to_gj(energy_usage_kwh)
-        return {"source": "nat_gas", "name": energy_use_name, "usage": energy_usage_gj}
+        return energy_usage_gj
 
 
-def get_building_results(df: pd.DataFrame, desired_total) -> Dict[str, float]:
+def get_building_results(df: pd.DataFrame, desired_total) -> float:
     """Gets the total energy results and converts to GJ from the building results of the .json output \n
     Enter the desired header from the json in "desired_total" to retrieve the value"""
 
@@ -59,7 +59,7 @@ def get_building_results(df: pd.DataFrame, desired_total) -> Dict[str, float]:
     total_kWh = convert_wh_to_kwh(total_wH)
     total_gJ = convert_kwh_to_gj(total_kWh)
 
-    return {"source": "elec", "name": desired_total, "usage": total_gJ}
+    return total_gJ
 
 
 def get_building_sizes(df: pd.DataFrame) -> List[str]:
@@ -90,11 +90,14 @@ energy_usages_elec = []
 for energy_category in energy_usage_categories:
     energy_usage = get_elec_energy_usage(df, energy_category)
     energy_usages_elec.append(energy_usage)
-    print(get_elec_energy_usage(df, energy_category))
+
+    # display
+    display_usage("elec", energy_category, energy_usage)
+
 
 # compute total electricty usage
-total_elec_usage = sum_values_by_key(energy_usages_elec, "usage")
-print(total_elec_usage)
+total_elec_usage = sum(energy_usages_elec)
+display_usage("elec", "total_electricity_usage", total_elec_usage)
 
 # get natural gas values
 print()
@@ -103,8 +106,9 @@ energy_usages_natGas = []
 for energy_category in energy_usage_categories:
     energy_usage = get_natGas_energy_usage(df, energy_category)
     energy_usages_natGas.append(energy_usage)
-    print(get_natGas_energy_usage(df, energy_category))
+    # display
+    display_usage("nat_gas", energy_category, energy_usage)
 
 # compute total nat gas usage
-total_natGas_usage = sum_values_by_key(energy_usages_natGas, "usage")
-print(total_natGas_usage)
+total_natGas_usage = sum(energy_usages_natGas)
+display_usage("nat_gas", "total_naturalGas_usage", total_natGas_usage)
