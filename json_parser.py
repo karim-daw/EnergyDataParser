@@ -96,9 +96,6 @@ total_fan_usage = fan_interior_local["usage"] + \
 fan_combined = {"name": "fan_total", "usage": total_fan_usage}
 print(fan_combined)
 
-# flatten building results data
-df_building_results_flat = pd.json_normalize(
-    data['proposed_results']['building_results'])
 
 """get total electricty values"""
 print(get_building_results(df, "Total electricity"))
