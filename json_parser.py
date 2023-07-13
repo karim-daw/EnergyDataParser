@@ -82,7 +82,6 @@ print()
 print("Builing Information...")
 print(get_building_sizes(df))
 
-
 # get electricty values
 print()
 print("Getting Electricity Usages...")
@@ -94,11 +93,6 @@ for energy_category in energy_usage_categories:
     # display
     display_usage("elec", energy_category, energy_usage)
 
-
-# compute total electricty usage
-total_elec_usage = sum(energy_usages_elec)
-display_usage("elec", "total_electricity_usage", total_elec_usage)
-
 # get natural gas values
 print()
 print("Getting Natural Gas Usages...")
@@ -109,6 +103,31 @@ for energy_category in energy_usage_categories:
     # display
     display_usage("nat_gas", energy_category, energy_usage)
 
-# compute total nat gas usage
+#  totals
+print()
+print("Getting Total Usages...")
+
+# compute total electricty usage
+total_elec_usage = sum(energy_usages_elec)
+display_usage("elec", "total_electricity_usage", total_elec_usage)
+
+# compute total gas usage
 total_natGas_usage = sum(energy_usages_natGas)
 display_usage("nat_gas", "total_naturalGas_usage", total_natGas_usage)
+
+# compute totals
+total_energy = 0
+for energy_category in energy_usage_categories:
+
+    total_energy_usage = sum([
+        get_elec_energy_usage(df, energy_category),
+        get_natGas_energy_usage(df, energy_category)
+    ])
+
+    # sum total energy
+    total_energy += total_energy_usage
+
+    display_usage("combined", "total_"+energy_category,
+                  total_energy_usage)
+# output total energy
+display_usage("combined", "total_energy", total_energy)
