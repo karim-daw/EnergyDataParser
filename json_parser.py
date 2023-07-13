@@ -5,6 +5,7 @@ from utilities import display_usage
 from energy_extractor import *
 
 json_file_path = "data/EC.d Export Pfizer_LEED_R1 [both].json"
+# json_file_path = "data\EC.d Export 2023_01_17_Visa_LEED [both].json"
 
 
 # Read JSON file
