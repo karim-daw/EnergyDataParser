@@ -4,18 +4,12 @@ from typing import List, Dict
 from convert_units import convert_kwh_to_gj, convert_wh_to_kwh
 
 
-def get_gj_value(df: pd.DataFrame, column_header: str) -> float:
-    value_kwh = df[column_header].iloc[0]
-    value_gwh = convert_kwh_to_gj(value_kwh)
-    return value_gwh
-
-
 def get_energy_sources(df: pd.DataFrame, energy_use_name: str) -> List[str]:
     energy_sources = df["proposed_results"]["energy_uses"][energy_use_name]["sources"]
     return list(energy_sources.keys())
 
 
-def get_energy_uses(df: pd.DataFrame) -> List[str]:
+def get_energy_uses_names(df: pd.DataFrame) -> List[str]:
     energy_sources = df["proposed_results"]["energy_uses"]
     return list(energy_sources.keys())
 
