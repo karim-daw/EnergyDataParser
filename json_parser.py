@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from convert_units import convert_kwh_to_gj
+from convert_units import convert_kwh_to_gj, convert_wh_to_kwh
 import typing
 
 json_file_path = "data/EC.d Export Pfizer_LEED_R1 [both].json"
@@ -15,15 +15,6 @@ def get_gj_value(df: pd.DataFrame, column_header: str) -> float:
 def get_energy_sources(df: pd.DataFrame, energy_use: str) -> typing.List[str]:
     energy_sources = df["proposed_results"]["energy_uses"][energy_use]["sources"]
     return list(energy_sources.keys())
-
-
-def sources_filtering_function(pair):
-    wanted_keys = ['name', 'usage']
-    key, value = pair
-    if key in wanted_keys:
-        return True  # keep pair in the filtered dictionary
-    else:
-        return False  # filter pair out of the dictionary
 
 
 def get_energy_usage(df: pd.DataFrame, energy_use_name: str, sourceFlag: int) -> float:
@@ -44,6 +35,17 @@ def get_energy_usage(df: pd.DataFrame, energy_use_name: str, sourceFlag: int) ->
     energy_usage = convert_kwh_to_gj(energy_usage)
 
     return {"name": energy_use_name, "usage": energy_usage}
+
+
+def get_building_results(df: pd.DataFrame, desired_total) -> float:
+    """Gets the total energy results and converts to GJ from the building results of the .json output \n
+    Enter the desired header from the json in "desired_total" to retrieve the value"""
+
+    total_wH = df["proposed_results"]["building_results"][desired_total]["total"]
+    total_kWh = convert_wh_to_kwh(total_wH)
+    total_gJ = convert_kwh_to_gj(total_kWh)
+
+    return {"name": desired_total, "usage": total_gJ}
 
 
 def get_building_sizes(df: pd.DataFrame) -> typing.List[str]:
@@ -98,8 +100,8 @@ print(fan_combined)
 df_building_results_flat = pd.json_normalize(
     data['proposed_results']['building_results'])
 
-# """get total electricty values"""
-# inW = get_gj_value(df_building_results_flat, "Total electricity.total")
+"""get total electricty values"""
+print(get_building_results(df, "Total electricity"))
 # inKWH = inW * 0.001
 # print(inKWH)
 
