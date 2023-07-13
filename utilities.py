@@ -11,6 +11,5 @@ def sum_values_by_key(dict_list: List[Dict[str, float]], key: str) -> float:
     return total_sum
 
 
-def display_usage(source: str, name: str, energy_category: str, usage: float):
-    print({'source': source, 'name': name,
-          'energy_category': energy_category, "usage": usage})
+def display_usage(source: str, energy_category: str, usage: float):
+    print({'source': source, 'energy_category': energy_category, "usage": usage})
