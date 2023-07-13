@@ -1,5 +1,6 @@
 import pandas as pd
 import json
+from gains_extractor import get_gains_source_amount, get_gains_source_name
 from utilities import display_usage
 from energy_extractor import *
 
@@ -13,13 +14,22 @@ with open(json_file_path) as f:
 # put json in dataframe
 df = pd.read_json(json_file_path)
 
-# get energy uses categories
-energy_usage_categories = get_energy_uses(df)
+
+################################################################################
+############################### BUILDING DATA ##################################
+################################################################################
 
 # get sizes of building
 print()
 print("Builing Information...")
 print(get_building_sizes(df))
+
+################################################################################
+################################# ENERGY #######################################
+################################################################################
+
+# get energy uses categories
+energy_usage_categories = get_energy_uses_names(df)
 
 # get electricty values
 print()
@@ -70,3 +80,21 @@ for energy_category in energy_usage_categories:
                   total_energy_usage)
 # output total energy
 display_usage("combined", "total_energy", total_energy)
+
+################################################################################
+################################# GAINS ########################################
+################################################################################
+
+# get gains sources
+gains_sources = get_gains_source_name(df)
+
+# get gains values
+print()
+print("Getting Gains Values...")
+gains_amount = []
+for gain_source in gains_sources:
+    gain_amount = get_gains_source_amount(df, gain_source)
+    gains_amount.append(gain_amount)
+
+    # display
+    display_usage("gains", gain_source, gain_amount)
