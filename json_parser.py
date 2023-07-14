@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from area_extractor import get_wall_construction_area_by_orientation
+from area_extractor import get_uVal_by_construction_category, get_wall_construction_area_by_orientation
 from gains_extractor import get_gains_source_amount, get_gains_source_name
 from utilities import display_usage
 from energy_extractor import *
@@ -114,7 +114,8 @@ df = pd.read_json(json_file_path)
 ################################################################################
 
 # get construction properties
-pprint(get_wall_construction_area_by_orientation(df, "Wall", 0))
-pprint(get_wall_construction_area_by_orientation(df, "Wall", 90))
-pprint(get_wall_construction_area_by_orientation(df, "Wall", 180))
-pprint(get_wall_construction_area_by_orientation(df, "Wall", 270))
+# pprint(get_wall_construction_area_by_orientation(df, "Wall", 0))
+# pprint(get_wall_construction_area_by_orientation(df, "Wall", 90))
+# pprint(get_wall_construction_area_by_orientation(df, "Wall", 180))
+# pprint(get_wall_construction_area_by_orientation(df, "Wall", 270))
+pprint(get_uVal_by_construction_category(df, "wall"))

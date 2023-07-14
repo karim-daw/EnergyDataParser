@@ -57,10 +57,33 @@ def get_wall_construction_area_by_orientation(df: pd.DataFrame, construction_typ
 # function that retrieves u values for walls by orientation
 
 
-def get_wall_uVal_by_orientation(df: pd.DataFrame, construction_type: str, orientation: int):
+def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str):
 
-    all_bodies = df["proposed_results"]["bodies"]
-    total_wall_uVal = 0
-    total_window_uVal = 0
+ # check that construction category is correct
+    valid_categories = ["ext_glazing", "wall", "roof", "partition"]
+    if construction_category not in valid_categories:
+        raise ValueError(
+            "construction category must be one of the following: ext_glazing, wall, roof, partition. You entered: " + construction_category)
 
-    pass
+    all_constructions = df["proposed_results"]["bodies"]["constructions"]
+
+    uValues_by_construction_category = []
+
+    # wall is the construction type and its lower case for some reason
+    construction_type = construction_category.lower()
+
+    # these are the construction names, this will be used to cross reference the different walls
+    # compared to their orienation in order to get a u value by oreintation
+    construction_names = all_constructions.keys()
+    print(construction_names)
+    for construction in all_constructions:
+        print(construction)
+        # if construction["category"] == construction_category:
+        #     uVal = construction["u_value"]
+        #     reference_name = construction["reference"]
+        #     # create data dict with the value and construction type
+        #     uVal_data = {"reference": reference_name,
+        #                  "u_value": uVal, "type": construction_category}
+        #     uValues_by_construction_category.append(uVal_data)
+
+    return uValues_by_construction_category
