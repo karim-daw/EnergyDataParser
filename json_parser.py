@@ -99,3 +99,9 @@ for gain_source in gains_sources:
 
     # display
     display_usage("gains", gain_source, gain_amount)
+
+# compute total gains
+total_gains = sum(gains_amount)
+
+# output total gains
+display_usage("gains", "total_gains", total_gains)
