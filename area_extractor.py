@@ -1,5 +1,6 @@
 import pandas as pd
 from typing import List, Dict
+from pprint import pprint
 
 
 def get_wall_construction_area_by_orientation(df: pd.DataFrame, construction_type: str, orientation: int):
@@ -57,33 +58,70 @@ def get_wall_construction_area_by_orientation(df: pd.DataFrame, construction_typ
 # function that retrieves u values for walls by orientation
 
 
-def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str):
+# def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str):
 
- # check that construction category is correct
+#  # check that construction category is correct
+#     valid_categories = ["ext_glazing", "wall", "roof", "partition"]
+#     if construction_category not in valid_categories:
+#         raise ValueError(
+#             "construction category must be one of the following: ext_glazing, wall, roof, partition. You entered: " + construction_category)
+
+#     all_constructions = df["proposed_results"]["bodies"]["constructions"]
+
+#     uValues_by_construction_category = []
+
+#     # wall is the construction type and its lower case for some reason
+#     construction_type = construction_category.lower()
+
+#     # these are the construction names, this will be used to cross reference the different walls
+#     # compared to their orienation in order to get a u value by oreintation
+#     construction_names = all_constructions.keys()
+#     for construction_name in construction_names:
+#         construction_data = all_constructions[construction_name]
+#         if construction_data["category"] == construction_category:
+#             uVal = construction_data["u_value"]
+#             reference_name = construction_data["reference"]
+#             # create data dict with the value and construction type
+#             uVal_data = {"construction_name": construction_name, "reference": reference_name,
+#                          "u_value": uVal, "type": construction_category}
+#             uValues_by_construction_category.append(uVal_data)
+
+#     return uValues_by_construction_category
+
+
+def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str):
     valid_categories = ["ext_glazing", "wall", "roof", "partition"]
+
     if construction_category not in valid_categories:
         raise ValueError(
-            "construction category must be one of the following: ext_glazing, wall, roof, partition. You entered: " + construction_category)
+            "Construction category must be one of the following: ext_glazing, wall, roof, partition. You entered: " + construction_category)
 
     all_constructions = df["proposed_results"]["bodies"]["constructions"]
 
-    uValues_by_construction_category = []
+    construction_category = construction_category.lower()
 
-    # wall is the construction type and its lower case for some reason
-    construction_type = construction_category.lower()
+    # Create a DataFrame from the constructions dictionary
+    # Transpose the DataFrame so that the construction names are the index
+    # and the columns are the construction properties
+    # This will make it easier to filter the DataFrame
+    constructions_df = pd.DataFrame(all_constructions).T
 
-    # these are the construction names, this will be used to cross reference the different walls
-    # compared to their orienation in order to get a u value by oreintation
-    construction_names = all_constructions.keys()
-    print(construction_names)
-    for construction in all_constructions:
-        print(construction)
-        # if construction["category"] == construction_category:
-        #     uVal = construction["u_value"]
-        #     reference_name = construction["reference"]
-        #     # create data dict with the value and construction type
-        #     uVal_data = {"reference": reference_name,
-        #                  "u_value": uVal, "type": construction_category}
-        #     uValues_by_construction_category.append(uVal_data)
+    # Filter the DataFrame based on the construction category
+    # This will return a new DataFrame with only the constructions
+    # that match the construction category
+    # The index of the DataFrame is the construction name
+    # The columns of the DataFrame are the construction properties
+    filtered_df = constructions_df[constructions_df["category"]
+                                   == construction_category].copy()
+
+    # Create a new DataFrame with the desired columns
+    # This will make it easier to convert the DataFrame to a list of dictionaries
+    # This will also make it easier to convert the DataFrame to a CSV file
+    uValues_df = filtered_df[["u_value", "g_values", "reference"]].copy()
+    uValues_df["construction_name"] = filtered_df.index
+    uValues_df["type"] = construction_category
+
+    # Convert the DataFrame to a list of dictionaries
+    uValues_by_construction_category = uValues_df.to_dict("records")
 
     return uValues_by_construction_category
