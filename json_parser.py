@@ -114,11 +114,11 @@ df = pd.read_json(json_file_path)
 ################################################################################
 
 # get construction properties
-# pprint(get_wall_construction_area_by_orientation(df, "Wall", 0))
+constructionData_0 = get_wall_construction_area_by_orientation(df, "Wall", 0)
 # pprint(get_wall_construction_area_by_orientation(df, "Wall", 90))
 # pprint(get_wall_construction_area_by_orientation(df, "Wall", 180))
 # pprint(get_wall_construction_area_by_orientation(df, "Wall", 270))
-pprint(get_uVal_by_construction_category(df, "wall"))
-pprint(get_uVal_by_construction_category(df, "roof"))
-pprint(get_uVal_by_construction_category(df, "ext_glazing"))
-pprint(get_uVal_by_construction_category(df, "partition"))
+# pprint(get_uVal_by_construction_category(df, "wall"))
+# pprint(get_uVal_by_construction_category(df, "roof"))
+# pprint(get_uVal_by_construction_category(df, "ext_glazing"))
+# pprint(get_uVal_by_construction_category(df, "partition"))
