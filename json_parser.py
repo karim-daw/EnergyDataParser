@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_area_by_construction_name_and_orientation, get_wall_construction_area_by_orientation
+from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_area_by_construction_name_and_orientation, get_wall_construction_area_by_orientation, get_weighted_average_uvalue_by_orientation
 from gains_extractor import get_gains_source_amount, get_gains_source_name
 from utilities import display_named_tuples, display_tuple_as_dict, display_usage, display_named_tuple
 from energy_extractor import *
@@ -135,23 +135,26 @@ display_named_tuple(constructions_by_area_south)
 # get construction properties
 print()
 print("Getting U-values by construction category...")
-# uValues_wall = get_uVal_by_construction_category(df, "wall")
-# uValues_roof = get_uVal_by_construction_category(df, "roof")
-# uValues_ext_glazing = get_uVal_by_construction_category(df, "ext_glazing")
-# uValues_partition = get_uVal_by_construction_category(df, "partition")
+uValues_wall = get_uVal_by_construction_category(df, "wall")
+uValues_roof = get_uVal_by_construction_category(df, "roof")
+uValues_ext_glazing = get_uVal_by_construction_category(df, "ext_glazing")
+uValues_partition = get_uVal_by_construction_category(df, "partition")
+display_named_tuples(uValues_wall)
+display_named_tuples(uValues_roof)
+display_named_tuples(uValues_ext_glazing)
+display_named_tuples(uValues_partition)
 
-# display_named_tuples(uValues_wall)
-# display_named_tuples(uValues_roof)
-# display_named_tuples(uValues_ext_glazing)
-# display_named_tuples(uValues_partition)
+print()
+print("Getting U-values by construction name...")
+pprint(get_uVal_by_construction_name(df, "STD_PART"))
 
-# pprint(get_uVal_by_cosntruction_name(df, "STD_PART"))
-# pprint(get_uVal_by_orientation(df, "Wall"))
+print()
+print("Getting U-values by orientation...")
+pprint(get_uVal_by_orientation(df, "Wall"))
 
 # test
 print()
-print("this is a test")
-
+print("Getting area by construction name and orientation...")
 display_tuple_as_dict(
     get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 180))
 display_tuple_as_dict(
@@ -160,3 +163,37 @@ display_tuple_as_dict(
     get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 270))
 display_tuple_as_dict(
     get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 0))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 180))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 90))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 270))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 0))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 180))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 90))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 270))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 0))
+
+print()
+print("testing weighted avereage u-value by orientation...")
+pprint(get_weighted_average_uvalue_by_orientation(df, 90))
+
+all_constructions_uValues_by_orientation = get_uVal_by_orientation(df, "Wall")
+
+weighted_average_uvalue_east = get_weighted_average_uvalue_by_orientation(
+    all_constructions_uValues_by_orientation, "East")
+weighted_average_uvalue_west = get_weighted_average_uvalue_by_orientation(
+    all_constructions_uValues_by_orientation, "West")
+# Calculate for other orientations as needed
+
+print("Weighted Average U-value for East orientation:",
+      weighted_average_uvalue_east)
+print("Weighted Average U-value for West orientation:",
+      weighted_average_uvalue_west)
+# Print for other orientations as needed
