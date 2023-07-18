@@ -2,6 +2,7 @@
 
 from typing import List, Dict, NamedTuple
 from pprint import pprint
+from numpy import average
 
 
 def sum_values_by_key(dict_list: List[Dict[str, float]], key: str) -> float:
@@ -25,3 +26,20 @@ def display_named_tuple(named_tuple: NamedTuple):
     for entry in named_tuple:
         # print(type(entry))
         print(entry)
+
+
+def display_tuple_as_dict(named_tuple: NamedTuple):
+    print(named_tuple._asdict())
+# compute weighted average of a list of named tuples using numpy
+
+
+def compute_weighted_average(named_tuples: List[NamedTuple], weight_key: str, value_key: str) -> float:
+    # get weights and values
+    weights = []
+    values = []
+    for named_tuple in named_tuples:
+        weights.append(named_tuple._asdict()[weight_key])
+        values.append(named_tuple._asdict()[value_key])
+    # compute weighted average
+    weighted_average = average(values, weights=weights)
+    return weighted_average
