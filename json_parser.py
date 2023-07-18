@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_cosntruction_name, get_uVal_by_orientation, get_wall_construction_area_by_orientation
+from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_construction_area_by_orientation
 from gains_extractor import get_gains_source_amount, get_gains_source_name
 from utilities import display_named_tuples, display_usage, display_named_tuple
 from energy_extractor import *
