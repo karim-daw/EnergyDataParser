@@ -192,35 +192,6 @@ def get_wall_area_by_construction_name_and_orientation(df: pd.DataFrame, constru
 
     return construction_area_by_name_orientation
 
-# function that gets area and orientation by constrction name
-# def get_area_and_orientation_by_construction_name(df: pd.DataFrame, construction_name: str) -> Dict:
-#     all_constructions  = df["proposed_results"]["bodies"]["constructions"]
-#     all_bodies = df["proposed_results"]["bodies"]["bodies"]
-    
-    
-#     construction_keys = all_constructions.keys()
-    
-#     construction_uValue = {}
-    
-#     # for each construction get the u value
-#     for construction_key in construction_keys:
-#         # if the construction name matches the construction name argument
-#         if construction_key == construction_name:
-#             # get the u value
-#             construction_data = all_constructions[construction_key]
-#             u_value = construction_data["u_value"]
-#             construction_category = construction_data["category"]
-
-#             # create a ConstructionUValues dict
-#             construction_uValue = {
-#                 "construction_name": construction_name,
-#                 "construction_category":construction_category,
-#                 "u_value": u_value}
-#             break
-
-
-#     return construction_uValue
-#     pass
     
 
 def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str) -> List[NamedTuple]:
@@ -376,7 +347,25 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
 
                 
                 
-            
+def get_weighted_average_uvalue_by_orientation(constructions_uvalues, orientation):
+    total_area_of_orientation = 0
+    total_weighted_uvalue = 0
+
+    for construction in constructions_uvalues:
+        print(construction)
+        if construction["orientation"] == orientation:
+            total_area_of_orientation += 1
+            total_weighted_uvalue += construction["u_value"]
+
+    if total_area_of_orientation != 0:
+        weighted_average_uvalue = total_weighted_uvalue / total_area_of_orientation
+        return weighted_average_uvalue
+    else:
+        return None
+
+
+
+    # print(all_constructions_uValues_by_orientation)       
             
         
         
