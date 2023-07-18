@@ -1,6 +1,6 @@
 # EnergyDataParser
 
-This Python code provides functionality to parse an EnergyPlus HTML table, extract data from it, and write the data to a CSV file. The code consists of several modules for different tasks.
+This Python code provides functionality to parse an EnergyPlus HTML table, an IES .json file and an eQuest .SIM file extract data from it. The code consists of several modules for different tasks but the main files have \*\_parser.py as a postfix. The app.py will eventually be a kind of "client" where you can use the vairous parsers
 
 ## Installation
 
@@ -35,7 +35,14 @@ This Python code provides functionality to parse an EnergyPlus HTML table, extra
    - `folder_path`: Set this variable to the path of the folder where you want to save the CSV output file.
    - `output_csv_file_name`: Set this variable to the desired name of the CSV output file.
 
-3. Run the app.py file:
+3. Run the app.py file if you want a preview on how to extract the .htm data:
+
    ```shell
    python app.py
+   ```
+
+   For now if you are testing, try running for the progress on the IES data extractor:
+
+   ```shell
+   python json_parser.py
    ```
