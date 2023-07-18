@@ -171,6 +171,83 @@ def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: s
     return uValues_by_construction_category
 
 
+def get_uVal_by_cosntruction_name(df: pd.DataFrame, construction_name: str) -> Dict:
+    all_constructions  = df["proposed_results"]["bodies"]["constructions"]
+    
+    construction_keys = all_constructions.keys()
+    
+    construction_uValue = {}
+    
+    # for each construction get the u value
+    for construction_key in construction_keys:
+        # if the construction name matches the construction name argument
+        if construction_key == construction_name:
+            # get the u value
+            construction_data = all_constructions[construction_key]
+            u_value = construction_data["u_value"]
+            construction_category = construction_data["category"]
+
+            # create a ConstructionUValues dict
+            construction_uValue = {
+                "construction_name": construction_name,
+                "construction_category":construction_category,
+                "u_value": u_value}
+            break
+
+
+    return construction_uValue
+        
+        
+
+
 # get u value by orientation
-def get_uVal_by_orientation(df: pd.DataFrame):
-    pass
+# get u value by orientation
+def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
+    all_constructions_uValues_by_orientation = []
+    unique_combinations = set()
+
+    all_bodies = df["proposed_results"]["bodies"]["bodies"]
+    
+    for body in all_bodies:
+        body_surfaces = body["surfaces"]
+        
+        for surface in body_surfaces:
+            if "o" in surface["properties"] and surface["properties"]["ty"] == construction_type:
+                construction_names = surface["constructions"]
+                orientation = surface["properties"]["o"]
+                
+                for construction_name in construction_names:
+                    combination = (construction_name, orientation)
+                    if combination in unique_combinations:
+                        continue
+                    
+                    uVal_data = get_uVal_by_cosntruction_name(df, construction_name)
+                    uVal = uVal_data["u_value"]
+                    construction_category = uVal_data["construction_category"]
+                
+                    orientation_label = {
+                        0: "North",
+                        90: "East",
+                        180: "South",
+                        270: "West"
+                    }.get(orientation, "Unknown")
+    
+                    construction_uValue_by_orientation = {
+                        "construction_name": construction_name,
+                        "construction_category": construction_category,
+                        "u_value": uVal,
+                        "orientation": orientation_label
+                    }
+                    
+                    all_constructions_uValues_by_orientation.append(construction_uValue_by_orientation)
+                    unique_combinations.add(combination)
+
+    return all_constructions_uValues_by_orientation
+
+                
+                
+            
+            
+        
+        
+ 
