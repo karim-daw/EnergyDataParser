@@ -1,8 +1,8 @@
 import pandas as pd
 import json
-from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_construction_area_by_orientation
+from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_area_by_construction_name_and_orientation, get_wall_construction_area_by_orientation
 from gains_extractor import get_gains_source_amount, get_gains_source_name
-from utilities import display_named_tuples, display_usage, display_named_tuple
+from utilities import display_named_tuples, display_tuple_as_dict, display_usage, display_named_tuple
 from energy_extractor import *
 from pprint import pprint
 
@@ -146,4 +146,17 @@ print("Getting U-values by construction category...")
 # display_named_tuples(uValues_partition)
 
 # pprint(get_uVal_by_cosntruction_name(df, "STD_PART"))
-pprint(get_uVal_by_orientation(df, "Wall"))
+# pprint(get_uVal_by_orientation(df, "Wall"))
+
+# test
+print()
+print("this is a test")
+
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 180))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 90))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 270))
+display_tuple_as_dict(
+    get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 0))
