@@ -6,6 +6,7 @@ from pandas import DataFrame
 
 #  named tuples
 ConstructionAreas = namedtuple("ConstructionAreas", ["wall", "window", "sum"])
+ConstructionAreasByNameAndOrientatoin = namedtuple("ConstructionAreasByNameAndOrientatoin", ["construction_category", "orientation", "total_area","construction_name"])
 ConstructionUValues = namedtuple("ConstructionUValues", [
     "construction_name", "reference", "type", "u_value", "g_values"])
 
@@ -107,6 +108,120 @@ def get_wall_construction_area_by_orientation(df: pd.DataFrame, construction_typ
 
     return construction_area
 
+
+def get_wall_area_by_construction_name_and_orientation(df: pd.DataFrame, construction_name: str, orientation: int):
+    
+    all_constructions  = df["proposed_results"]["bodies"]["constructions"]
+    
+    construction_keys = all_constructions.keys()
+    # the valid construction keys have valid categories below
+    valid_categories = ["ext_glazing", "wall"]
+    # filter construction keys by valid categories
+    valid_construction_keys = [key for key in construction_keys if all_constructions[key]["category"] in valid_categories]
+
+
+    # check if the construction type is valid
+    if construction_name not in valid_construction_keys:
+        raise ValueError("Construction name must be one of: " + str(valid_construction_keys) + "you entered " + construction_name)
+
+    # create a list of valid orientations
+    valid_orientations = [0, 90, 180, 270]
+
+    # check if the orientation is valid
+    if orientation not in valid_orientations:
+        raise ValueError(
+            "Orientation must be one of the following: 0, 90, 180, 270. You entered: " + str(orientation))
+
+    #   this returns a list of dictionaries of all the bodies
+    all_bodies = df["proposed_results"]["bodies"]["bodies"]
+
+    surfaces = []
+    for body in all_bodies:
+        surfaces.extend(body["surfaces"])
+
+    # create a DataFrame from the surfaces list
+    surfaces_df = pd.DataFrame(surfaces)
+
+    # filter the DataFrame based on the construction type and orientation
+    # this will return a new DataFrame with only the surfaces that match the construction type and orientation
+    # it first checks if the key "o" is in the properties
+    # then it checks if the construction type matches the construction type argument
+    # then it checks if the orientation is within +- 10 degrees of the orientation argument
+    filtered_df = surfaces_df[
+        surfaces_df.apply(
+            lambda row: "o" in row["properties"] 
+            and row["properties"]["ty"] == "Wall" 
+            and (row["properties"]["o"] >= orientation - 10)
+            and (row["properties"]["o"] <= orientation + 10)
+            and construction_name in row["constructions"], axis=1)
+    ]
+
+    # get the wall area and window area
+    # by applying a lambda function to the areas column
+    # the lambda function checks if the key "ew" is in the areas dictionary
+    # if it is, it returns the value of the key "ew" if it is not, it returns 0
+    # "en" means net envelope area
+    # "ew" means window area
+    construction_category = all_constructions[construction_name]["category"]
+    
+    if(construction_category == "wall"):
+        area = filtered_df["areas"].apply(
+            lambda x: x["en"]).sum()
+    elif(construction_category == "ext_glazing"):
+        area = filtered_df["areas"].apply(
+            lambda x: x.get("ew", 0)).sum()
+    else:
+        raise ValueError("Construction category must be one of: " + str(valid_construction_keys) + "you entered " + construction_name)
+
+    orientation_label = {
+        0: "North",
+        90: "East",
+        180: "South",
+        270: "West"
+    }.get(orientation, "Unknown")
+
+    # create a ConstructionAreas namedtuple
+    construction_area_by_name_orientation = ConstructionAreasByNameAndOrientatoin(
+
+            construction_category = construction_category,
+            orientation = orientation_label,
+            total_area = area,
+            construction_name = construction_name
+
+    )
+
+    return construction_area_by_name_orientation
+
+# function that gets area and orientation by constrction name
+# def get_area_and_orientation_by_construction_name(df: pd.DataFrame, construction_name: str) -> Dict:
+#     all_constructions  = df["proposed_results"]["bodies"]["constructions"]
+#     all_bodies = df["proposed_results"]["bodies"]["bodies"]
+    
+    
+#     construction_keys = all_constructions.keys()
+    
+#     construction_uValue = {}
+    
+#     # for each construction get the u value
+#     for construction_key in construction_keys:
+#         # if the construction name matches the construction name argument
+#         if construction_key == construction_name:
+#             # get the u value
+#             construction_data = all_constructions[construction_key]
+#             u_value = construction_data["u_value"]
+#             construction_category = construction_data["category"]
+
+#             # create a ConstructionUValues dict
+#             construction_uValue = {
+#                 "construction_name": construction_name,
+#                 "construction_category":construction_category,
+#                 "u_value": u_value}
+#             break
+
+
+#     return construction_uValue
+#     pass
+    
 
 def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: str) -> List[NamedTuple]:
     """ Get the U-Values for a given construction category from the JSON
