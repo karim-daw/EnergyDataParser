@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-from envelope_extractor import get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_area_by_construction_name_and_orientation, get_wall_construction_area_by_orientation, get_weighted_average_uvalue_by_orientation
+from envelope_extractor import compute_weighted_average, get_uVal_by_construction_category, get_uVal_by_construction_name, get_uVal_by_orientation, get_wall_area_by_construction_name_and_orientation, get_wall_construction_area_by_orientation
 from gains_extractor import get_gains_source_amount, get_gains_source_name
 from utilities import display_named_tuples, display_tuple_as_dict, display_usage, display_named_tuple
 from energy_extractor import *
@@ -150,7 +150,13 @@ pprint(get_uVal_by_construction_name(df, "STD_PART"))
 
 print()
 print("Getting U-values by orientation...")
+data = get_uVal_by_orientation(df, "Wall")
 pprint(get_uVal_by_orientation(df, "Wall"))
+
+print()
+print("Compute Weighted Average U-Values by Orientation...")
+weighted_average = compute_weighted_average(data)
+print("Weighted Average U-value:", weighted_average)
 
 # test
 print()
@@ -182,18 +188,3 @@ display_tuple_as_dict(
 
 print()
 print("testing weighted avereage u-value by orientation...")
-pprint(get_weighted_average_uvalue_by_orientation(df, 90))
-
-all_constructions_uValues_by_orientation = get_uVal_by_orientation(df, "Wall")
-
-weighted_average_uvalue_east = get_weighted_average_uvalue_by_orientation(
-    all_constructions_uValues_by_orientation, "East")
-weighted_average_uvalue_west = get_weighted_average_uvalue_by_orientation(
-    all_constructions_uValues_by_orientation, "West")
-# Calculate for other orientations as needed
-
-print("Weighted Average U-value for East orientation:",
-      weighted_average_uvalue_east)
-print("Weighted Average U-value for West orientation:",
-      weighted_average_uvalue_west)
-# Print for other orientations as needed
