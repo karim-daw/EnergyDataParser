@@ -10,13 +10,13 @@ This Python code provides functionality to parse an EnergyPlus HTML table, an IE
 
    ```shell
    # Create a new virtual environment
-   python -m venv energyplus-parser-venv
+   python -m venv energydataparser-venv
 
    # Activate the virtual environment
    # On Windows
-   energyplus-parser-venv\Scripts\activate.bat
+   energydataparser-venv\Scripts\activate.bat
    # On macOS/Linux
-   source energyplus-parser-venv/bin/activate
+   source energydataparser-venv/bin/activate
    ```
 
 3. Install the dependencies from the provided requirements.txt file:
@@ -26,8 +26,9 @@ This Python code provides functionality to parse an EnergyPlus HTML table, an IE
 
 ## Usage
 
-1. Place the EnergyPlus HTML file you want to parse in the same directory as the code files.
+1. Place the EnergyPlus .htm, IES .json, and/or eQuest .SIM file you want to parse in the the `data` folder as thats where the scripts will be pointed to to recieve the input files.
 
+STILL WIP
 2. Open the `app.py` file and update the following variables:
 
    - `html_file_path`: Set this variable to the path of your EnergyPlus HTML file.
@@ -41,8 +42,14 @@ This Python code provides functionality to parse an EnergyPlus HTML table, an IE
    python app.py
    ```
 
-   For now if you are testing, try running for the progress on the IES data extractor:
+   If you want to see my progress so far, for now if you are testing, try running the IES data parser:
 
    ```shell
    python json_parser.py
+   ```
+
+   or on the .SIM parser:
+
+   ```shell
+   python sim_parser.py
    ```
