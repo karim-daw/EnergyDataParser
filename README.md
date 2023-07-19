@@ -24,11 +24,11 @@ This Python code provides functionality to parse an EnergyPlus HTML table, an IE
    pip install -r requirements.txt
    ```
 
-## Usage
+## Usage STILL WIP
 
 1. Place the EnergyPlus .htm, IES .json, and/or eQuest .SIM file you want to parse in the the `data` folder as thats where the scripts will be pointed to to recieve the input files.
 
-STILL WIP
+
 2. Open the `app.py` file and update the following variables:
 
    - `html_file_path`: Set this variable to the path of your EnergyPlus HTML file.
