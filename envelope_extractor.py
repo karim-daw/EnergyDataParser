@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List, Dict, NamedTuple
 from pprint import pprint
 from pandas import DataFrame
+import numpy as np
 
 #  named tuples
 ConstructionAreas = namedtuple("ConstructionAreas", ["wall", "window", "sum"])
@@ -288,8 +289,7 @@ def get_uVal_by_construction_name(df: pd.DataFrame, construction_name: str) -> D
 
 
 def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
-    all_constructions_uValues_by_orientation = []
-    unique_combinations = set()
+    construction_areas = {}  # Dictionary to accumulate the total area by identifier
 
     all_bodies = df["proposed_results"]["bodies"]["bodies"]
 
@@ -305,19 +305,12 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
 
         for surface in body_surfaces:
             properties = surface.get("properties", {})
+            areas = surface.get("areas", {})
             if "o" in properties and properties["ty"] == construction_type:
                 construction_names = surface["constructions"]
                 orientation = properties["o"]
 
                 for construction_name in construction_names:
-                    combination = (construction_name, orientation)
-                    if combination in unique_combinations:
-                        continue
-
-                    uVal_data = get_uVal_by_construction_name(df, construction_name)
-                    uVal = uVal_data["u_value"]
-                    construction_category = uVal_data["construction_category"]
-
                     for orientation_range, mapped_orientation in orientation_mapping.items():
                         if orientation_range[0] <= orientation <= orientation_range[1]:
                             orientation = mapped_orientation
@@ -325,48 +318,67 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
                     else:
                         orientation = "Orientation not found"
 
-                    orientation_labels = {
-                        0: "North",
-                        90: "East",
-                        180: "South",
-                        270: "West"
-                    }
-                    orientation_label = orientation_labels.get(orientation, "Unknown")
+                    combination = (construction_type, construction_name, orientation)
+                    uVal_data = get_uVal_by_construction_name(df, construction_name)
+                    uVal = uVal_data["u_value"]
+                    construction_category = uVal_data["construction_category"]
 
-                    construction_uValue_by_orientation = {
-                        "construction_name": construction_name,
-                        "construction_category": construction_category,
-                        "u_value": uVal,
-                        "orientation": orientation_label
-                    }
+                    # Getting area by construction name and orientation
+                    if construction_category == "wall":
+                        area = areas.get("en", 0)
+                    elif construction_category == "ext_glazing":
+                        area = areas.get("ew", 0)
 
-                    all_constructions_uValues_by_orientation.append(construction_uValue_by_orientation)
-                    unique_combinations.add(combination)
+                    # Combine dictionaries with the same identifier and accumulate the area
+                    if combination in construction_areas:
+                        construction_areas[combination]["total_area"] += area
+                    else:
+                        orientation_labels = {
+                            0: "North",
+                            90: "East",
+                            180: "South",
+                            270: "West"
+                        }
+                        orientation_label = orientation_labels.get(orientation, "Unknown")
+
+                        construction_uValue_by_orientation = {
+                            "construction_name": construction_name,
+                            "construction_category": construction_category,
+                            "u_value": uVal,
+                            "orientation": orientation_label,
+                            "total_area": area
+                        }
+                        construction_areas[combination] = construction_uValue_by_orientation
+
+    # Retrieve the combined dictionaries from the lookup table
+    all_constructions_uValues_by_orientation = list(construction_areas.values())
 
     return all_constructions_uValues_by_orientation
 
+
+
+def compute_weighted_average(data):
+    orientation_u_values = {}
+    orientations = np.array([entry['orientation'] for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
+    areas = np.array([entry['total_area'] for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
+    u_values = np.array([entry['u_value'] for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
+
+    unique_orientations = np.unique(orientations)
+
+    for orientation in unique_orientations:
+        mask = orientations == orientation
+        orientation_areas = areas[mask]
+        orientation_u_vals = u_values[mask]
+        weighted_avg = np.average(orientation_u_vals, weights=orientation_areas)
+        orientation_u_values[orientation] = weighted_avg
+
+    return orientation_u_values
+
+
+
+
+
+
+
                 
                 
-def get_weighted_average_uvalue_by_orientation(constructions_uvalues, orientation):
-    total_area_of_orientation = 0
-    total_weighted_uvalue = 0
-
-    for construction in constructions_uvalues:
-        print(construction)
-        if construction["orientation"] == orientation:
-            total_area_of_orientation += 1
-            total_weighted_uvalue += construction["u_value"]
-
-    if total_area_of_orientation != 0:
-        weighted_average_uvalue = total_weighted_uvalue / total_area_of_orientation
-        return weighted_average_uvalue
-    else:
-        return None
-
-
-
-    # print(all_constructions_uValues_by_orientation)       
-            
-        
-        
- 
