@@ -5,6 +5,7 @@ from convert_units import convert_kwh_to_gj
 
 sim_file_path = "data/JPL LEED Base 10 - Baseline Design.SIM"
 
+
 # Read the .SIM file
 with open(sim_file_path, 'r') as file:
     sim_data = file.read()
