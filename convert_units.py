@@ -23,3 +23,15 @@ def convert_wh_to_kwh(wh: float) -> float:
     # perform the conversion
     kwh = wh * conversion_factor
     return kwh
+
+
+def convert_therm_to_kwh(therm: float) -> float:
+    # convertion_factor from therm to kWh
+    conversion_factor = 29.3001
+
+    if therm < 0:
+        raise ValueError("Input therm must be a positive number.")
+
+    # perform the conversion
+    kwh = therm * conversion_factor
+    return kwh
