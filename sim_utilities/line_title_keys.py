@@ -1,6 +1,3 @@
-from collections import namedtuple
-from typing import NamedTuple
-
 
 # Sample named tuple instances
 BUILDING_SIZE_TOTALS = r'BUILDING TOTALS\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)'
