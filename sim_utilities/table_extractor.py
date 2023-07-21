@@ -2,8 +2,9 @@ import re
 from typing import NamedTuple
 import pandas as pd
 from pprint import pprint
-from convert_units import convert_kwh_to_gj
+from convert_units import *
 from . import table_title_keys as ttks
+from typing import Union
 
 
 # function that given a .sim file and a table title, returns a list of values
@@ -69,7 +70,8 @@ def extract_table_between_keywords(text, table_pattern: ttks.TableTitle) -> str:
 
     else:
         # If either or both keywords are not found, return None or handle it as you see fit.
-        return None
+        # throw an error to the user to satisfy type checking
+        raise ValueError("Table not found")
 
 
 # find the total usage by fuel type from a table represented as a string
@@ -86,8 +88,10 @@ def find_total_usage_by_fuel_type(table: str):
             values = row.split()
             # print the first two values
 
-            usage_elec_total = convert_kwh_to_gj(float(values[-1]))
-            print("Total Electricy Usage [kWH]: ", usage_elec_total)
+            usage_elec_total_kwh = float(values[-1])
+            usage_elec_total_gj = convert_kwh_to_gj(usage_elec_total_kwh)
+            print("Total Electricy Usage [KWH]: ", usage_elec_total_kwh)
+            print("Total Electricy Usage [GJ]: ", usage_elec_total_gj)
             continue
 
         if "THERM" in row:
@@ -95,18 +99,57 @@ def find_total_usage_by_fuel_type(table: str):
             values = row.split()
             # print the first two values
 
-            usage_nat_gas_total = convert_kwh_to_gj(float(values[-1]))
-            print("Total Natural Gas Usage [kWH]: ", usage_nat_gas_total)
+            usage_net_gas_total_therms = float(values[-1])
+            usage_net_gas_total_kwh = convert_therm_to_kwh(usage_net_gas_total_therms)
+
+            usage_nat_gas_total_gj = convert_kwh_to_gj(usage_net_gas_total_kwh)
+            print("Total Natural Gas Usage [KWH]: ", usage_net_gas_total_kwh)
+            print("Total Natural Gas Usage [GJ]: ", usage_nat_gas_total_gj)
             break
 
 
+# find the total usage of electrity by source from a table represented as a string
+def find_total_electricty_usage_by_source(table: str, source: ttks.EnergyUsageHeader):
+    rows = table.split('\n')
+    # strip empty lines
+    rows = [row for row in rows if row.strip()]
+
+    for i in range(len(rows) - 10, len(rows)):
+        row = rows[i]
+        # check if the row contains the word "KWH"
+        if "KWH" in row:
+            # delimit by spaces
+            values = row.split()
+
+            # handle the case when source is None
+            if source is not None and hasattr(source, 'header_index'):
+                # print value for debugging
+                usage_elec_total_kwh = float(values[source.header_index])
+                usage_elec_total_gj = convert_kwh_to_gj(usage_elec_total_kwh)
+                print("Total Electricity Usage for {} [KWH]: {}".format(
+                    source.header_name, usage_elec_total_kwh)
+                )
+                print("Total Electricity Usage for {} [GJ]: {}".format(
+                    source.header_name, usage_elec_total_gj))
+            else:
+                raise ValueError("Source is None")
+            break
+
+
+######### getters #########
 # get the total usage by fuel type from a table represented as a string
-def get_total_usage_by_fuel_type(text, desired_data):
+def get_total_usage_by_fuel_type(text, desired_data: ttks.TableTitle):
     table = extract_table_between_keywords(text, desired_data)
     find_total_usage_by_fuel_type(table)
 
 
-def get_data(text, desired_data):
-    print("desired data: ", desired_data)
-    if desired_data == ttks.ENERGY_ENDUSES_BY_FUELTYPE:
+def get_total_usage_by_source(text, desired_data: ttks.TableTitle, source: ttks.EnergyUsageHeader):
+    table = extract_table_between_keywords(text, desired_data)
+    find_total_electricty_usage_by_source(table, source)
+
+
+def get_data(text, desired_data: ttks.TableTitle, source: Union[ttks.EnergyUsageHeader, None] = None):
+    if desired_data == ttks.TOTAL_ENERGY_ENDUSES_BY_FUELTYPE:
         get_total_usage_by_fuel_type(text, desired_data)
+    elif desired_data == ttks.TOTAL_ELECTRICTY_ENDUS_BY_SOURCE and source is not None and hasattr(source, 'header_index'):
+        get_total_usage_by_source(text, desired_data, source)
