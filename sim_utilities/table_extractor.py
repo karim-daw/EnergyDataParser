@@ -16,6 +16,9 @@ def get_totals_from_table(file: str, table: ttks.TableTitle):
     start_index = sim_data.find(table.start_title)
     end_index = sim_data.find(table.end_title)
 
+    print("start index: ", start_index)
+    print("end index: ", end_index)
+
     # Extract the table data between the start and end indices
     if start_index != -1 and end_index != -1:
         table_data = sim_data[start_index +
@@ -25,11 +28,14 @@ def get_totals_from_table(file: str, table: ttks.TableTitle):
 
     # Initialize the list of dictionaries
     table_list = []
+    print("hello")
+    print(table_data)
 
     # delimit string by new line
     rows = table_data.split('\n')
     # strip empty lines
     rows = [row for row in rows if row.strip()]
+
     for i in range(len(rows)-10, len(rows)):
         row = rows[i]
         # check if he row contains the word "KWH"
