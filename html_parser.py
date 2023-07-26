@@ -5,8 +5,9 @@ def parse_html_table(file_path, table_names):
     with open(file_path) as file:
         # Parse only table tags and b tags
         parse_only = SoupStrainer(['table', 'b'])
-        soup = BeautifulSoup(file, 'lxml', parse_only=parse_only)  # Use lxml parser
+        soup = BeautifulSoup(file, 'lxml', parse_only=parse_only)  # Use lxml parser cause its faster
 
+        # Initialize dictionary to store all table data
         all_table_data = {}
 
         for table_name in table_names:
