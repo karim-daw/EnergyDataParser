@@ -1,6 +1,6 @@
 from collections import namedtuple
 import pandas as pd
-from typing import List, Dict, NamedTuple
+from typing import List, Dict, NamedTuple, Union
 from pprint import pprint
 from pandas import DataFrame
 import numpy as np
@@ -308,7 +308,7 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
             areas = surface.get("areas", {})
             if "o" in properties and properties["ty"] == construction_type:
                 construction_names = surface["constructions"]
-                orientation = properties["o"]
+                orientation:  Union[float, str] = properties["o"]
 
                 for construction_name in construction_names:
                     for orientation_range, mapped_orientation in orientation_mapping.items():
@@ -324,6 +324,7 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
                     construction_category = uVal_data["construction_category"]
 
                     # Getting area by construction name and orientation
+                    area = 0
                     if construction_category == "wall":
                         area = areas.get("en", 0)
                     elif construction_category == "ext_glazing":
