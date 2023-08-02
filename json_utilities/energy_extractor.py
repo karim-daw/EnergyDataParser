@@ -16,9 +16,6 @@ def get_energy_uses_names(df: pd.DataFrame) -> List[str]:
 
 def get_elec_energy_usage(df: pd.DataFrame, energy_use_name: str) -> float:
     """get the energy usage of the json file in gj\n
-    The sourceFlag mapping is as follows:\n
-    1 = Electricity
-    2 = Natural Gas
     """
 
     if "elec" in df["proposed_results"]["energy_uses"][energy_use_name]["sources"]:
