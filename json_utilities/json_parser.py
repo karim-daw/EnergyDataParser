@@ -96,31 +96,20 @@ def display_u_values(df):
 
 
 def display_area_by_construction_name_and_orientation(df):
-    print("\nTesting weighted average u-value by orientation...")
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 180))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 90))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 270))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSEW0181", 0))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 180))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 90))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 270))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "STD_WAL1", 0))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 180))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 90))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 270))
-    display_tuple_as_dict(
-        get_wall_area_by_construction_name_and_orientation(df, "BSWAL221", 0))
+    print("\nComputing area by construciton name and orientation...")
+
+    # get construction names
+    construction_names = get_construction_names(df)
+    # get orientations
+    orientations = [0, 90, 180, 270]
+
+    # get area by construction name and orientation
+    for construction_name in construction_names:
+        # check if construction is vertical
+        if is_vertical_wall(df, construction_name):
+            for orientation in orientations:
+                area = get_wall_area_by_construction_name_and_orientation(df, construction_name, orientation)
+                display_tuple_as_dict(area)
 
 
 def parse_json_file(json_file_path):
@@ -129,9 +118,9 @@ def parse_json_file(json_file_path):
 
     pprint(get_construction_names(df))
 
-    # display_building_information(df)
-    # display_energy_usage(df)
-    # display_gains(df)
-    # display_areas_by_orientation(df)
-    # display_u_values(df)
-    # display_area_by_construction_name_and_orientation(df)
+    display_building_information(df)
+    display_energy_usage(df)
+    display_gains(df)
+    display_areas_by_orientation(df)
+    display_u_values(df)
+    display_area_by_construction_name_and_orientation(df)
