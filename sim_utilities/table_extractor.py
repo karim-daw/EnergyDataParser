@@ -2,7 +2,7 @@ import re
 from typing import NamedTuple
 import pandas as pd
 from pprint import pprint
-from convert_units import *
+from general_utilities.convert_units import *
 from . import table_title_keys as ttks
 from typing import Union
 

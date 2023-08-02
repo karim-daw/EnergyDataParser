@@ -1,7 +1,7 @@
 import os
-from html_parser import parse_html_table
-from csv_writer import write_table_to_csv
-from file_utils import generate_unique_filename
+from htm_utilities.html_parser import parse_html_table
+from general_utilities.csv_writer import write_table_to_csv
+from general_utilities.file_utils import generate_unique_filename
 
 # Usage example
 # name of the html file to parse
