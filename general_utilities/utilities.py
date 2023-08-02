@@ -31,7 +31,3 @@ def display_named_tuple(named_tuple: NamedTuple):
 def display_tuple_as_dict(named_tuple: NamedTuple):
     print(named_tuple._asdict())
 # compute weighted average of a list of named tuples using numpy
-
-
-def compute_weighted_average(amounts, values) -> float:
-    return average(values, weights=amounts)
