@@ -30,6 +30,33 @@ def get_construction_names(df: pd.DataFrame) -> List[str]:
     return construction_names
 
 
+def is_vertical_wall(df: pd.DataFrame, construction_name: str) -> bool:
+    """ Check if a given construction name is a vertical wall.
+
+    Args:
+        df (pd.DataFrame): .json file converted to a DataFrame
+        construction_name (str): The construction name to check.
+
+    Returns:
+        bool: True if the construction name is a vertical wall, False otherwise.
+    """
+
+    all_constructions = df["proposed_results"]["bodies"]["constructions"]
+
+    # for each construction get the u value
+    for construction_key in all_constructions.keys():
+        # if the construction name matches the construction name argument
+        if construction_key == construction_name:
+            # get the u value
+            construction_data = all_constructions[construction_key]
+            construction_category = construction_data["category"]
+
+            if construction_category == "wall" or construction_category == "ext_glazing":
+                return True
+
+    return False
+
+
 def get_wall_construction_area_by_orientation(
         df: pd.DataFrame, construction_type: str, orientation: int) -> ConstructionAreas:
     """ Get the wall area and window area for a given construction type 
