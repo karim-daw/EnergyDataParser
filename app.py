@@ -1,11 +1,28 @@
 import os
 from htm_utilities.html_parser import parse_html_table
 from json_utilities.json_parser import *
+from sim_utilities.sim_parser import *
 
 from general_utilities.csv_writer import write_table_to_csv
 from general_utilities.file_utils import generate_unique_filename
 
-parse_json_file("data_in/EC.d Export Pfizer_LEED_R1 [both].json")
+
+# get user input for file path
+file_path = input("Enter the file path: ")
+
+# check if file exists
+if not os.path.isfile(file_path):
+    print("File does not exist")
+    exit()
+
+# get file extension
+file_extension = os.path.splitext(file_path)[1]
+
+# parse file based on extension
+if file_extension == ".json":
+    parse_json_file(file_path)
+elif file_extension == ".SIM":
+    parse_sim_file(file_path)
 
 
 # Usage example
