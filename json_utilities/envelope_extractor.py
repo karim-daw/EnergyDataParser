@@ -404,14 +404,17 @@ def get_uVal_by_orientation(df: pd.DataFrame, construction_type: str):
     return all_constructions_uValues_by_orientation
 
 
-def compute_weighted_average(data):
+def compute_weighted_average(data: List[Dict[str, float]]) -> Dict[float, float]:
     orientation_u_values = {}
-    orientations = np.array([entry['orientation']
-                            for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
-    areas = np.array([entry['total_area']
-                     for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
-    u_values = np.array([entry['u_value']
-                        for entry in data if entry['construction_category'] not in ['partition', 'int_glazing']])
+
+    orientations = np.array([entry['orientation'] for entry in data if entry['construction_category'] not in [
+                            'partition', 'int_glazing']], dtype=float)
+
+    areas = np.array([entry['total_area'] for entry in data if entry['construction_category']
+                     not in ['partition', 'int_glazing']], dtype=float)
+
+    u_values = np.array([entry['u_value'] for entry in data if entry['construction_category']
+                        not in ['partition', 'int_glazing']], dtype=float)
 
     unique_orientations = np.unique(orientations)
 
