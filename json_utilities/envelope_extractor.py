@@ -272,7 +272,6 @@ def get_uVal_by_construction_category(df: pd.DataFrame, construction_category: s
     # Create a DataFrame from the constructions dictionary
     # Transpose the DataFrame so that the construction names are the index
     # and the columns are the construction properties
-    # This will make it easier to filter the DataFrame
     constructions_df = pd.DataFrame(all_constructions).T
 
     # Filter the DataFrame based on the construction category
