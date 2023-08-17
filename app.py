@@ -1,28 +1,53 @@
 import os
-from htm_utilities.html_parser import parse_html_table
 from json_utilities.json_parser import *
 from sim_utilities.sim_parser import *
+from htm_utilities.htm_parser import *
 
 from general_utilities.csv_writer import write_table_to_csv
 from general_utilities.file_utils import generate_unique_filename
 
 
-# get user input for file path
-file_path = input("Enter the file path: ")
+# testing htm parser
+# htm_file_path = 'data_in/Energy Models_EnergyPlus.htm'
+# parse_htm_file(htm_file_path)
 
-# check if file exists
-if not os.path.isfile(file_path):
-    print("File does not exist")
-    exit()
 
-# get file extension
-file_extension = os.path.splitext(file_path)[1]
+# while loop to get user input
+while True:
+    # get user input for file path
+    file_path = input("Enter the file path: ")
 
-# parse file based on extension
-if file_extension == ".json":
-    parse_json_file(file_path)
-elif file_extension == ".SIM":
-    parse_sim_file(file_path)
+    # check if file exists
+    if not os.path.isfile(file_path):
+        print("File does not exist")
+    else:
+        print("File exists")
+
+        # get file extension
+        file_extension = os.path.splitext(file_path)[1]
+
+        # parse file based on extension
+        if file_extension == ".json":
+            parse_json_file(file_path)
+        elif file_extension == ".SIM":
+            parse_sim_file(file_path)
+        elif file_extension == ".htm":
+            print("Parsing htm file...")
+            parse_htm_file(file_path)
+        else:
+            print("File type is not supported")
+
+
+# # get file extension
+# file_extension = os.path.splitext(file_path)[1]
+
+# # parse file based on extension
+# if file_extension == ".json":
+#     parse_json_file(file_path)
+# elif file_extension == ".SIM":
+#     parse_sim_file(file_path)
+# elif file_extension == ".htm":
+#     parse_htm_file(file_path)
 
 
 # Usage example
