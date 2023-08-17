@@ -408,7 +408,7 @@ def compute_weighted_average(data: List[Dict[str, float]]) -> Dict[float, float]
     orientation_u_values = {}
 
     orientations = np.array([entry['orientation'] for entry in data if entry['construction_category'] not in [
-                            'partition', 'int_glazing']], dtype=float)
+                            'partition', 'int_glazing']], dtype=str)
 
     areas = np.array([entry['total_area'] for entry in data if entry['construction_category']
                      not in ['partition', 'int_glazing']], dtype=float)
