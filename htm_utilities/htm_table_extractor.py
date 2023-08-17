@@ -103,7 +103,7 @@ def extract_table_by_name(text: str, table_name: str) -> Dict[str, Dict[str, str
             # Find header cells in the first row
             header_cells = rows[0].find_all('td')
             headers = [cell.get_text(strip=True) for cell in header_cells]
-            print("These are the headers: ", headers)
+            # print("These are the headers: ", headers)
 
             # Initialize table-specific data
             data = {}
@@ -116,7 +116,7 @@ def extract_table_by_name(text: str, table_name: str) -> Dict[str, Dict[str, str
 
             # Store the table-specific data in the main dictionary
             all_table_data[table_name] = data
-            print("this is the data: ", data)
+            # print("this is the data: ", data)
         else:
             print(f"No table found for '{table_name}'")
 
