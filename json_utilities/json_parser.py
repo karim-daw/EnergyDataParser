@@ -1,14 +1,14 @@
 import pandas as pd
 import json
-from json_utilities.envelope_extractor import *
-from json_utilities.gains_extractor import *
+from json_utilities.json_envelope_extractor import *
+from json_utilities.json_gains_extractor import *
 from general_utilities.utilities import *
-from json_utilities.energy_extractor import *
+from json_utilities.json_energy_extractor import *
 from pprint import pprint
 
 
-def read_json_file(json_file_path):
-    with open(json_file_path) as f:
+def read_json_file(file_path):
+    with open(file_path) as f:
         return json.load(f)
 
 
@@ -112,9 +112,9 @@ def display_area_by_construction_name_and_orientation(df):
                 display_tuple_as_dict(area)
 
 
-def parse_json_file(json_file_path):
-    data = read_json_file(json_file_path)
-    df = pd.read_json(json_file_path)
+def parse_json_file(file_path):
+    data = read_json_file(file_path)
+    df = pd.read_json(file_path)
 
     pprint(get_construction_names(df))
 
