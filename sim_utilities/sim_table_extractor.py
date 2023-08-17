@@ -2,15 +2,13 @@ import re
 from typing import NamedTuple
 import pandas as pd
 from pprint import pprint
-from convert_units import *
-from . import table_title_keys as ttks
+from general_utilities.convert_units import *
+from . import sim_table_title_keys as ttks
 from typing import Union
 
 
 # function that given a .sim file and a table title, returns a list of values
-def get_totals_from_table(text, table: ttks.TableTitle):
-
-    # Find the start and end indices of the desired table
+def extract_table_by_title(text, table: ttks.TableTitle):
     start_index = text.find(table.start_title)
     end_index = text.find(table.end_title)
 
@@ -23,10 +21,17 @@ def get_totals_from_table(text, table: ttks.TableTitle):
                           len(table.start_title):end_index].strip()
     else:
         table_data = ''
+    return table_data
+
+
+def get_totals_from_table(text, table: ttks.TableTitle):
+
+    # Get table data
+    table_data = extract_table_by_title(text, table)
 
     # Initialize the list of dictionaries
     table_list = []
-    print(table_data)
+    # print(table_data)
 
     # delimit string by new line
     rows = table_data.split('\n')
@@ -148,7 +153,7 @@ def get_total_usage_by_source(text, desired_data: ttks.TableTitle, source: ttks.
     find_total_electricty_usage_by_source(table, source)
 
 
-def get_data(text, desired_data: ttks.TableTitle, source: Union[ttks.EnergyUsageHeader, None] = None):
+def get_data_from_table(text, desired_data: ttks.TableTitle, source: Union[ttks.EnergyUsageHeader, None] = None):
     if desired_data == ttks.TOTAL_ENERGY_ENDUSES_BY_FUELTYPE:
         get_total_usage_by_fuel_type(text, desired_data)
     elif desired_data == ttks.TOTAL_ELECTRICTY_ENDUS_BY_SOURCE and source is not None and hasattr(source, 'header_index'):

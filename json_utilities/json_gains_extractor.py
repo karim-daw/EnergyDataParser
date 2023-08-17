@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List, Dict
-from convert_units import convert_kwh_to_gj, convert_wh_to_kwh
+from general_utilities.convert_units import convert_kwh_to_gj, convert_wh_to_kwh
 
 
 def get_gains_source_name(df: pd.DataFrame) -> List[str]:
