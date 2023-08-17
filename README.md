@@ -26,30 +26,72 @@ This Python code provides functionality to parse an EnergyPlus HTML table, an IE
 
 ## Usage STILL WIP
 
-1. Place the EnergyPlus .htm, IES .json, and/or eQuest .SIM file you want to parse in the the `data` folder as thats where the scripts will be pointed to to recieve the input files.
+1. Place the EnergyPlus .htm, IES .json, and/or eQuest .SIM file you want to parse in the the `data_in` folder as thats where the scripts will be pointed to to recieve the input files.
 
-
-2. Open the `app.py` file and update the following variables:
-
-   - `html_file_path`: Set this variable to the path of your EnergyPlus HTML file.
-   - `table_name`: Set this variable to the name of the table you want to parse.
-   - `folder_path`: Set this variable to the path of the folder where you want to save the CSV output file.
-   - `output_csv_file_name`: Set this variable to the desired name of the CSV output file.
-
-3. Run the app.py file if you want a preview on how to extract the .htm data:
+2. Run the app.py file if you want a preview on how to extract the .htm data:
 
    ```shell
    python app.py
    ```
 
-   If you want to see my progress so far, for now if you are testing, try running the IES data parser:
+This will display a simple menu where you can enter the file path to the the file you want to parse. The output will be printed in your console.
 
-   ```shell
-   python json_parser.py
-   ```
+```
+==================================================
+Welcome to the Energy Model Parser!
+==================================================
 
-   or on the .SIM parser:
+1. Proceed to the parser
+2. Exit program
 
-   ```shell
-   python sim_parser.py
-   ```
+```
+
+```
+Enter menu option: 1
+
+Proceeding to the parser...
+==================================================
+Enter the file path:
+```
+
+```
+Enter the file path: C:\Users\43310\source\repos\EnergyDataParser\data_in\JPL LEED Base 10 - Baseline Design.SIM
+File exists
+Parsing sim file...
+
+Getting building size data...
+[994.2, 85981.9, 1514489.2]
+[109.0, 76.0, 33.0]
+
+Getting energy data...
+Total Electricy Usage [KWH]:  4041652.0
+Total Electricy Usage [GJ]:  14549.947199999999
+Total Natural Gas Usage [KWH]:  1379448.708
+Total Natural Gas Usage [GJ]:  4966.0153488000005
+Total Electricity Usage for LIGHTS [KWH]: 377708.0
+Total Electricity Usage for LIGHTS [GJ]: 1359.7488
+Total Electricity Usage for MISC_ELECTRIC [KWH]: 1435014.0
+Total Electricity Usage for MISC_ELECTRIC [GJ]: 5166.0504
+Total Electricity Usage for SPACE_HEATING [KWH]: 2718.0
+Total Electricity Usage for SPACE_HEATING [GJ]: 9.7848
+Total Electricity Usage for SPACE_COOLING [KWH]: 743543.0
+Total Electricity Usage for SPACE_COOLING [GJ]: 2676.7547999999997
+Total Electricity Usage for PUMPS [KWH]: 199356.0
+Total Electricity Usage for PUMPS [GJ]: 717.6816
+Total Electricity Usage for VENTS_FANS [KWH]: 199356.0
+Total Electricity Usage for VENTS_FANS [GJ]: 717.6816
+Total Electricity Usage for DOMESTIC_HOT_WATER [KWH]: 0.0
+Total Electricity Usage for DOMESTIC_HOT_WATER [GJ]: 0.0
+Total Electricity Usage for EXTERNAL_EQUIPMENT [KWH]: 22516.0
+Total Electricity Usage for EXTERNAL_EQUIPMENT [GJ]: 81.0576
+
+==================================================
+Welcome to the Energy Model Parser!
+==================================================
+
+1. Proceed to the parser
+2. Exit program
+
+Enter menu option:
+
+```
